@@ -2,7 +2,9 @@
 
 A full-stack application for bi-directional data transfer between ClickHouse databases and flat files (CSV).
 
-## Project Overview
+---
+
+## 🚀 Project Overview
 
 This tool provides a user-friendly interface for:
 
@@ -11,7 +13,9 @@ This tool provides a user-friendly interface for:
 - Importing data from CSV files to ClickHouse
 - Browsing and previewing database tables and columns
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```
 .
@@ -34,166 +38,174 @@ This tool provides a user-friendly interface for:
 │   │   └── lib/            # Utilities and API services
 │   └── package.json        # Frontend dependencies
 │
-├── package.json            # Root package.json with convenience scripts
+├── package.json            # Root with workspace scripts
 ├── start.sh                # Unix startup script
 ├── start.bat               # Windows startup script
-└── .gitignore              # Git ignore file
+└── .gitignore              # Git ignore rules
 ```
 
-## Features
+---
 
-- **Database Connectivity**: Connect to any ClickHouse database instance
-- **Data Export**: Export data from ClickHouse tables to CSV files
-- **Data Import**: Import data from CSV files to ClickHouse tables
-- **Table/Column Selection**: Browse and select specific tables and columns
-- **Data Preview**: Preview data before import/export
-- **File Management**: Upload and download CSV files
+## ✨ Features
 
-## Technologies Used
+- **Database Connectivity**: Connect to any ClickHouse instance
+- **Data Export**: Export ClickHouse table data to CSV files
+- **Data Import**: Import CSV file contents into ClickHouse
+- **Table/Column Browsing**: Select specific tables and columns
+- **Data Preview**: Preview data before performing operations
+- **File Handling**: Upload/download CSVs with ease
+
+---
+
+## 🛠 Technologies Used
 
 ### Backend
 
 - Node.js with Express
 - ClickHouse Node.js client
-- CSV parsing and writing utilities
-- File upload handling with Multer
+- CSV parsing utilities
+- Multer for file uploads
 
 ### Frontend
 
-- React.js with Next.js
-- Modern UI components
-- HTTP client for API communication
+- React with Next.js
+- Tailored UI components
+- Axios/fetch for API communication
 
-## Performance Considerations
+---
 
-- Uses streams for large file operations when possible
-- Provides support for different delimiters in CSV files
-- Implements error handling and connection management
+## ⚡ Performance Considerations
 
-## Getting Started
+- Efficient **stream-based file operations**
+- Support for **custom CSV delimiters**
+- Connection pooling and error management
 
-### Prerequisites
+---
 
-- Node.js (v16 or later)
-- ClickHouse database instance
-- npm or pnpm package manager
+## ✅ Prerequisites
 
-### Installation
+- Node.js (v16+)
+- A running ClickHouse database instance
+- [pnpm](https://pnpm.io) as the package manager (recommended)
 
-#### Method 1: Using the root package.json (recommended)
+---
+
+## 📦 Installation
+
+### Recommended (Using Root `pnpm` Workspace)
 
 1. Clone the repository:
 
-   ```
+   ```bash
    git clone <repository-url>
    cd <repository-directory>
    ```
 
 2. Install all dependencies:
-   ```
-   npm run install:all
-   ```
 
-#### Method 2: Installing individual packages
-
-1. Clone the repository:
-
-   ```
-   git clone <repository-url>
-   cd <repository-directory>
+   ```bash
+   pnpm install:all
    ```
 
-2. Install backend dependencies:
+### Alternative (Manual)
 
-   ```
-   cd backend
-   npm install
-   cd ..
-   ```
+```bash
+git clone <repository-url>
+cd <repository-directory>
 
-3. Install frontend dependencies:
-   ```
-   cd frontend
-   npm install
-   cd ..
-   ```
+# Backend
+cd backend
+pnpm install
+cd ..
 
-### Running the Application
-
-#### Method 1: Using startup scripts
-
-**On Unix/Linux/Mac:**
-
+# Frontend
+cd frontend
+pnpm install
 ```
+
+---
+
+## ▶ Running the App
+
+### Option 1: Use Start Scripts
+
+**Unix/Linux/Mac:**
+
+```bash
 chmod +x start.sh
 ./start.sh
 ```
 
-**On Windows:**
+**Windows:**
 
-```
+```cmd
 start.bat
 ```
 
-#### Method 2: Using npm scripts
+### Option 2: Use Workspace Script
 
+```bash
+pnpm dev
 ```
-npm run dev
+
+This concurrently runs both frontend and backend.
+
+### Option 3: Run Individually
+
+```bash
+# Backend
+cd backend
+pnpm dev
+
+# Frontend
+cd frontend
+pnpm dev
 ```
 
-#### Method 3: Running services individually
+Then open your browser at [http://localhost:3000](http://localhost:3000)
 
-1. Start the backend server:
+---
 
-   ```
-   cd backend
-   npm run dev
-   ```
+## 🧪 Usage
 
-2. Start the frontend development server:
+### 1. Connect to ClickHouse
 
-   ```
-   cd frontend
-   npm run dev
-   ```
+- Enter connection details (host, port, user, etc.)
+- Click **Connect**
 
-3. Open your browser and navigate to http://localhost:3000
+### 2. Export Data
 
-## Usage
+- Choose “ClickHouse to CSV”
+- Select table and columns
+- Provide a filename
+- Click **Export**
 
-1. **Connect to ClickHouse**:
+### 3. Import Data
 
-   - Enter your ClickHouse connection details
-   - Click "Connect" to establish a connection
+- Choose “CSV to ClickHouse”
+- Upload a CSV file
+- Select or create a target table
+- Click **Import**
 
-2. **Export Data**:
+---
 
-   - Select "ClickHouse to CSV" as the operation
-   - Choose tables and columns to export
-   - Specify a filename for the exported CSV
-   - Click "Export" to start the process
+## 📚 More Info
 
-3. **Import Data**:
-   - Select "CSV to ClickHouse" as the operation
-   - Upload a CSV file
-   - Specify a target table name
-   - Click "Import" to start the process
+- Backend details: [`backend/README.md`](backend/README.md)
+- ClickHouse client usage: [ClickHouse JS Docs](https://clickhouse.com/docs/integrations/javascript)
 
-## Additional Information
+---
 
-For more details on the individual components:
+## 🚀 Performance Optimization
 
-- See [backend/README.md](backend/README.md) for backend documentation
-- For ClickHouse client optimization tips, refer to the [official documentation](https://clickhouse.com/docs/integrations/javascript)
+From official guidance:
 
-## Performance Optimization
+- Use `compression: true` in the client config for bandwidth reduction
+- Use streams for large file transfers
+- Prefer async inserts for high-throughput operations
 
-Based on ClickHouse documentation:
+---
 
-- For large datasets, consider enabling compression via `ClickHouseClientConfigOptions.compression` to reduce network traffic
-- Use streams for large inserts and selects to reduce application memory consumption
-- Consider using async inserts for event listeners and similar use cases
+## 📄 License
 
-## License
-
-This project is licensed under the ISC License.
+This project is licensed under the **ISC License**.
