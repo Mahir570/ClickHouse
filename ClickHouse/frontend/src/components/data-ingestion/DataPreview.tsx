@@ -167,124 +167,129 @@ export function DataPreview({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Data Preview and Ingestion Controls</CardTitle>
-        <CardDescription>
-          Preview data and control the ingestion process
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {/* Target configuration section */}
-        {target === "clickhouse" && (
-          <div className="mb-4">
-            <Label htmlFor="targetTable">Target Table Name</Label>
-            <Input
-              id="targetTable"
-              placeholder="Enter target table name"
-              value={targetTable}
-              onChange={(e) => setTargetTable(e.target.value)}
-              className="mb-4"
-            />
-            {source === "flatfile" && selectedFile && (
-              <p className="text-xs text-muted-foreground mb-2">
-                Your uploaded file will be ingested into the ClickHouse table
-                specified above.
-              </p>
-            )}
-          </div>
+    <Card className="rounded-2xl shadow-lg border border-border bg-background">
+  <CardHeader>
+    <CardTitle className="text-xl font-semibold">
+      Data Preview and Ingestion Controls
+    </CardTitle>
+    <CardDescription className="text-sm text-muted-foreground">
+      Preview data and control the ingestion process
+    </CardDescription>
+  </CardHeader>
+  <CardContent className="space-y-4">
+    {/* Target Configuration */}
+    {target === "clickhouse" && (
+      <div className="space-y-1">
+        <Label htmlFor="targetTable" className="text-sm font-medium">
+          Target Table Name
+        </Label>
+        <Input
+          id="targetTable"
+          placeholder="Enter target table name"
+          value={targetTable}
+          onChange={(e) => setTargetTable(e.target.value)}
+          className="rounded-md border bg-white"
+        />
+        {source === "flatfile" && selectedFile && (
+          <p className="text-xs text-muted-foreground">
+            File will be ingested into the table above.
+          </p>
         )}
+      </div>
+    )}
 
-        {target === "flatfile" && (
-          <div className="mb-4">
-            <Label htmlFor="targetFile">Export File Name</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="targetFile"
-                placeholder="export.csv"
-                value={targetFile}
-                onChange={(e) => setTargetFile(e.target.value)}
-                className="mb-4"
-              />
-              {!targetFile.toLowerCase().endsWith(".csv") && (
-                <p className="text-xs text-yellow-500 mb-4">
-                  File name should end with .csv
-                </p>
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground mb-2">
-              Your selected data will be exported as a CSV file with this name.
-            </p>
-          </div>
+    {target === "flatfile" && (
+      <div className="space-y-1">
+        <Label htmlFor="targetFile" className="text-sm font-medium">
+          Export File Name
+        </Label>
+        <Input
+          id="targetFile"
+          placeholder="export.csv"
+          value={targetFile}
+          onChange={(e) => setTargetFile(e.target.value)}
+          className="rounded-md border bg-white"
+        />
+        {!targetFile.toLowerCase().endsWith(".csv") && (
+          <p className="text-xs text-yellow-600 font-medium">
+            File name should end with `.csv`
+          </p>
         )}
+        <p className="text-xs text-muted-foreground">
+          Exported file will contain selected data.
+        </p>
+      </div>
+    )}
 
-        <div className="flex flex-wrap gap-2 mb-4">
-          {source === "clickhouse" && (
-            <Button
-              onClick={handlePreviewData}
-              className="flex items-center gap-1"
-              disabled={isLoading}
-            >
-              <Eye className="h-4 w-4" />
-              {isLoading ? "Loading..." : "Preview Data"}
-            </Button>
-          )}
-          <Button
-            onClick={handleStartIngestion}
-            variant="default"
-            className="flex items-center gap-1"
-            disabled={isLoading}
-          >
-            <Play className="h-4 w-4" />
-            {isLoading
-              ? "Processing..."
-              : source === "flatfile" && target === "clickhouse"
-              ? "Send to ClickHouse"
-              : source === "clickhouse" && target === "flatfile"
-              ? "Export to CSV"
-              : "Start Ingestion"}
-          </Button>
-          <Button
-            onClick={onReset}
-            variant="outline"
-            className="flex items-center gap-1"
-            disabled={isLoading}
-          >
-            <RefreshCw className="h-4 w-4" />
-            Reset
-          </Button>
-        </div>
+    {/* Button Controls */}
+    <div className="flex flex-wrap gap-2 pt-2">
+      {source === "clickhouse" && (
+        <Button
+          onClick={handlePreviewData}
+          className="flex items-center gap-2"
+          disabled={isLoading}
+        >
+          <Eye className="h-4 w-4" />
+          {isLoading ? "Loading..." : "Preview Data"}
+        </Button>
+      )}
+      <Button
+        onClick={handleStartIngestion}
+        className="flex items-center gap-2"
+        disabled={isLoading}
+      >
+        <Play className="h-4 w-4" />
+        {isLoading
+          ? "Processing..."
+          : source === "flatfile" && target === "clickhouse"
+          ? "Send to ClickHouse"
+          : source === "clickhouse" && target === "flatfile"
+          ? "Export to CSV"
+          : "Start Ingestion"}
+      </Button>
+      <Button
+        onClick={onReset}
+        variant="outline"
+        className="flex items-center gap-2"
+        disabled={isLoading}
+      >
+        <RefreshCw className="h-4 w-4" />
+        Reset
+      </Button>
+    </div>
 
-        {previewData.length > 0 && (
-          <div className="border rounded-md overflow-auto max-h-60">
-            <table className="min-w-full divide-y divide-border">
-              <thead className="bg-muted">
-                <tr>
-                  {Object.keys(previewData[0]).map((key) => (
-                    <th
-                      key={key}
-                      className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
-                    >
-                      {key}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-card divide-y divide-border">
-                {previewData.map((row, i) => (
-                  <tr key={i}>
-                    {Object.values(row).map((value, j) => (
-                      <td key={j} className="px-4 py-2 text-sm">
-                        {value as string}
-                      </td>
-                    ))}
-                  </tr>
+    {/* Preview Table */}
+    {previewData.length > 0 && (
+      <div className="border rounded-lg overflow-auto max-h-[300px]">
+        <table className="w-full text-sm text-left border-collapse">
+          <thead className="bg-muted text-muted-foreground text-xs uppercase tracking-wide">
+            <tr>
+              {Object.keys(previewData[0]).map((key) => (
+                <th key={key} className="px-4 py-2 font-semibold border-b">
+                  {key}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y">
+            {previewData.map((row, i) => (
+              <tr
+                key={i}
+                className={i % 2 === 0 ? "bg-background" : "bg-muted/20"}
+              >
+                {Object.values(row).map((value, j) => (
+                  <td key={j} className="px-4 py-2 whitespace-nowrap">
+                    {value as string}
+                  </td>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </CardContent>
+</Card>
+
   );
 }
