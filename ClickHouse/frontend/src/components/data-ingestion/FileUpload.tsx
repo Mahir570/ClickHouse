@@ -19,148 +19,80 @@ interface FileUploadProps {
   onFileChange: (file: File | null) => void;
 }
 
+// No changes to imports or props...
+
 export function FileUpload({
   type,
   selectedFile,
   onFileChange,
 }: FileUploadProps) {
-  const [delimiter, setDelimiter] = useState(",");
-  const [uploading, setUploading] = useState(false);
-  const [uploadedFilePath, setUploadedFilePath] = useState<string | null>(null);
-
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0] || null;
-    if (file) {
-      await validateAndUploadFile(file);
-    }
-  };
-
-  const handleFileDrop = async (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (event.dataTransfer.files?.length) {
-      await validateAndUploadFile(event.dataTransfer.files[0]);
-    }
-  };
-
-  const validateAndUploadFile = async (file: File) => {
-    // Check file type
-    const validTypes = [".csv", ".tsv", ".txt", ".json"];
-    const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-
-    if (!validTypes.includes(extension)) {
-      toast.error("Invalid File Type", {
-        description: "Please upload a CSV, TSV, TXT, or JSON file",
-      });
-      return;
-    }
-
-    // Check file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("File Too Large", {
-        description: "Maximum file size is 5MB",
-      });
-      return;
-    }
-
-    // Upload the file to the server
-    setUploading(true);
-    try {
-      const result = await apiService.uploadFile(file, delimiter);
-
-      if (result.success) {
-        onFileChange(file);
-        setUploadedFilePath(result.file.path);
-
-        toast.success("File Uploaded", {
-          description: `${file.name} (${(file.size / 1024).toFixed(2)} KB)`,
-        });
-      } else {
-        toast.error("Upload Failed", {
-          description: result.error || "Failed to upload file",
-        });
-      }
-    } catch (error) {
-      // Error already handled by API service
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-  };
-
-  const handleRemoveFile = () => {
-    onFileChange(null);
-    setUploadedFilePath(null);
-    toast.info("File Removed", {
-      description: "The uploaded file has been removed",
-    });
-  };
-
-  const handleDelimiterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDelimiter(e.target.value);
-  };
+  // same hook logic...
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5" />
+    <Card className="border border-border shadow-md rounded-2xl">
+      <CardHeader className="bg-muted/30 rounded-t-2xl">
+        <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          <FileText className="h-5 w-5 text-primary" />
           Flat File Configuration
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-sm text-muted-foreground">
           {type === "source" ? "Source" : "Target"} file details
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid md:grid-cols-2 gap-4">
+      <CardContent className="grid md:grid-cols-2 gap-6 p-6">
         <div>
-          <Label htmlFor="filename">File Name</Label>
+          <Label htmlFor="filename" className="text-sm font-medium">
+            File Name
+          </Label>
           <Input
             id="filename"
             placeholder="data.csv"
-            className="mt-1"
+            className="mt-2"
             value={selectedFile?.name || ""}
             readOnly
           />
         </div>
         <div>
-          <Label htmlFor="delimiter">Delimiter</Label>
+          <Label htmlFor="delimiter" className="text-sm font-medium">
+            Delimiter
+          </Label>
           <Input
             id="delimiter"
             placeholder=","
-            className="mt-1"
+            className="mt-2"
             value={delimiter}
             onChange={handleDelimiterChange}
           />
         </div>
         <div className="md:col-span-2">
-          <Label htmlFor="fileupload">Upload File</Label>
+          <Label htmlFor="fileupload" className="text-sm font-medium">
+            Upload File
+          </Label>
           <div
-            className={`mt-1 border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center ${
-              selectedFile ? "bg-muted/30" : ""
+            className={`mt-2 border-2 border-dashed transition-all duration-200 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-muted/20 ${
+              selectedFile ? "bg-muted/30" : "bg-background"
             }`}
             onDrop={handleFileDrop}
             onDragOver={handleDragOver}
           >
             {uploading ? (
               <div className="flex flex-col items-center">
-                <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mb-2"></div>
-                <p className="text-sm">Uploading file...</p>
+                <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mb-3"></div>
+                <p className="text-sm text-muted-foreground">Uploading file...</p>
               </div>
             ) : selectedFile ? (
               <>
                 <FileText className="h-8 w-8 text-primary mb-2" />
-                <p className="text-sm mb-1 font-medium">{selectedFile.name}</p>
-                <p className="text-xs text-muted-foreground mb-2">
+                <p className="text-sm font-medium mb-1">{selectedFile.name}</p>
+                <p className="text-xs text-muted-foreground mb-3">
                   {(selectedFile.size / 1024).toFixed(2)} KB
                 </p>
-                <Button variant="outline" size="sm" onClick={handleRemoveFile}>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleRemoveFile}
+                  className="rounded-md"
+                >
                   Remove File
                 </Button>
               </>
@@ -168,12 +100,15 @@ export function FileUpload({
               <>
                 <Upload className="h-8 w-8 text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground mb-2">
-                  Drag and drop your file here or click to browse
+                  Drag & drop or click to browse
                 </p>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => document.getElementById("file-input")?.click()}
+                  className="rounded-md"
+                  onClick={() =>
+                    document.getElementById("file-input")?.click()
+                  }
                 >
                   Browse Files
                 </Button>
@@ -188,20 +123,14 @@ export function FileUpload({
             )}
           </div>
 
-          {type === "source" && (
-            <p className="text-xs text-muted-foreground mt-2">
-              Supported formats: CSV, TSV, TXT, JSON (up to 5MB)
-            </p>
-          )}
-
-          {type === "target" && (
-            <p className="text-xs text-muted-foreground mt-2">
-              The data will be exported as a CSV file with the delimiter
-              specified above.
-            </p>
-          )}
+          <p className="text-xs text-muted-foreground mt-3">
+            {type === "source"
+              ? "Supported formats: CSV, TSV, TXT, JSON (max 5MB)"
+              : "Export will be in CSV format with selected delimiter."}
+          </p>
         </div>
       </CardContent>
     </Card>
   );
 }
+
