@@ -31,13 +31,7 @@ This tool provides a user-friendly interface for:
 │   ├── exports/            # Exported files directory
 │   └── package.json        # Backend dependencies
 │
-├── frontend/               # React/Next.js frontend
-│   ├── src/                # Source code
-│   │   ├── app/            # Next.js app directory
-│   │   ├── components/     # UI components
-│   │   └── lib/            # Utilities and API services
-│   └── package.json        # Frontend dependencies
-│
+
 ├── package.json            # Root with workspace scripts
 ├── start.sh                # Unix startup script
 ├── start.bat               # Windows startup script
@@ -66,13 +60,7 @@ This tool provides a user-friendly interface for:
 - CSV parsing utilities
 - Multer for file uploads
 
-### Frontend
 
-- React with Next.js
-- Tailored UI components
-- Axios/fetch for API communication
-
----
 
 ## ⚡ Performance Considerations
 
@@ -118,10 +106,6 @@ cd backend
 pnpm install
 cd ..
 
-# Frontend
-cd frontend
-pnpm install
-```
 
 ---
 
@@ -148,7 +132,7 @@ start.bat
 pnpm dev
 ```
 
-This concurrently runs both frontend and backend.
+This concurrently runs backend.
 
 ### Option 3: Run Individually
 
@@ -157,10 +141,6 @@ This concurrently runs both frontend and backend.
 cd backend
 pnpm dev
 
-# Frontend
-cd frontend
-pnpm dev
-```
 
 Then open your browser at [http://localhost:3000](http://localhost:3000)
 
